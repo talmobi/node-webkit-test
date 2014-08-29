@@ -1,0 +1,58 @@
+<html>
+<head>
+  <title>node-webkit test</title>
+</head>
+<body>
+
+  <canvas id='myCanvas' width='320' height='240'></canvas>
+
+  <script>
+    var canvas = document.getElementById('myCanvas');
+    var ctx = canvas.getContext('2d');
+
+    ctx.fillColor = 'black';
+    ctx.fillRect(0,0,200,200);
+
+    var img = new Image();
+
+    var imgs = [];
+    var cols = 12;
+    var rows = 41;
+
+    var fs = require('fs');
+
+    var http = require('http');
+
+
+    img.onload = function() {
+      var w = (img.width / cols) | 0;
+      var h = (img.height / rows) | 0;
+      canvas.width = w;
+      canvas.height = h;
+
+      for (var x = 0; x < cols; x++) {
+        for (var y = 0; y < rows; y++) {
+          ctx.clearRect(0,0,w,h);
+          ctx.drawImage(img, x * w, y * h, w, h, 0, 0, w, h);
+
+          var buffer = ctx.getImageData(0,0,w,h);
+
+          imgs.push( buffer );
+        }
+      }
+
+
+      console.log( imgs[0] );
+
+      ctx.clearRect(0,0,w,h);
+
+      setInterval(function() {
+        ctx.putImageData(imgs[ imgs.length * Math.random() | 0 ], 0, 0);
+      },100);
+    }
+
+    img.src = 'assets/img/tmp.png';
+
+  </script>
+</body>
+</html>
